@@ -1,2 +1,3 @@
 lua.o
 lua.dylib
+lua.so
