@@ -130,6 +130,13 @@ sqlite_lua(sqlite3_context *ctx, int nargs, sqlite3_value **args)
     int status;
 
     lua_source = (const char *) sqlite3_value_text(args[0]);
+
+   if (lua_source == NULL) {
+      lua_pushstring(L, "No argument passed to lua");
+      handle_lua_error(L, ctx);
+      return;
+    }
+
     /* we prefix "return " first to enable automatic returning of values */
     lua_pushliteral(L, "return ");
     lua_pushstring(L, lua_source);
