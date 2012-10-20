@@ -168,6 +168,15 @@ sqlite_lua(sqlite3_context *ctx, int nargs, sqlite3_value **args)
     convert_lua_value_to_sqlite(L, ctx);
 }
 
+static void *
+sqlite_lua_allocator(void *ud, void *ptr, size_t osize, size_t nsize)
+{
+    (void) ud;
+    (void) osize;
+
+    return sqlite3_realloc(ptr, nsize);
+}
+
 int
 sqlite3_extension_init(sqlite3 *db, char **error, const sqlite3_api_routines *api)
 {
@@ -175,7 +184,7 @@ sqlite3_extension_init(sqlite3 *db, char **error, const sqlite3_api_routines *ap
 
     SQLITE_EXTENSION_INIT2(api);
 
-    L = luaL_newstate();
+    L = lua_newstate(sqlite_lua_allocator, NULL);
     luaL_openlibs(L);
 
     if(! L) {
